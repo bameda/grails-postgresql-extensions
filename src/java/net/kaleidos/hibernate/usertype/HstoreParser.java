@@ -1,12 +1,12 @@
 package net.kaleidos.hibernate.usertype;
 
+import org.postgresql.util.PGobject;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
-
-import org.postgresql.util.PGobject;
 
 /**
  * This class is an extended version of HStore.java from https://code.google.com/p/pg-spring-type-mapper/
@@ -21,11 +21,6 @@ public class HstoreParser extends PGobject implements Iterable<Map.Entry<String,
         this.type = "hstore";
         this.value = rawValue;
         this.length = rawValue == null ? 0 : rawValue.length();
-    }
-
-    public HstoreParser() {
-        this.type = "hstore";
-        this.length = 0;
     }
 
     public void setValue(String rawValue) {
@@ -58,17 +53,14 @@ public class HstoreParser extends PGobject implements Iterable<Map.Entry<String,
             this.value = value;
         }
 
-        @Override
         public String getKey() {
             return key;
         }
 
-        @Override
         public String getValue() {
             return value;
         }
 
-        @Override
         public String setValue(String value) {
             final String oldValue = this.value;
             this.value = value;
@@ -98,7 +90,6 @@ public class HstoreParser extends PGobject implements Iterable<Map.Entry<String,
             advance();
         }
 
-        @Override
         public boolean hasNext() {
             return nextEntry != null;
         }
@@ -112,7 +103,6 @@ public class HstoreParser extends PGobject implements Iterable<Map.Entry<String,
             return lastReturned;
         }
 
-        @Override
         public Entry<String, String> next() throws NoSuchElementException, IllegalStateException {
             try {
                 return rawNext();
@@ -249,8 +239,7 @@ public class HstoreParser extends PGobject implements Iterable<Map.Entry<String,
             }
             if (sb == null) {
                 // we consumed the last quote
-                String r = value.substring(firstQuotePosition + 1, position);
-                return r;
+                return value.substring(firstQuotePosition + 1, position);
             } else {
                 return sb.toString();
             }
@@ -270,17 +259,14 @@ public class HstoreParser extends PGobject implements Iterable<Map.Entry<String,
             // step back as we are already one char away
             position--;
             // substring is using quite a strange way of defining end position
-            final String r = value.substring(firstWordPosition, position + 1 );
-            return r;
+            return value.substring(firstWordPosition, position + 1 );
         }
 
-        @Override
         public void remove() {
             throw new UnsupportedOperationException();
         }
     }
 
-    @Override
     public Iterator<Entry<String, String>> iterator() {
         try {
             return new HStoreIterator();
